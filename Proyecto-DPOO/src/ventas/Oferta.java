@@ -1,5 +1,7 @@
 package ventas;
 
+import compradores.Comprador;
+
 public class Oferta {
 
 	private Comprador ofertador;

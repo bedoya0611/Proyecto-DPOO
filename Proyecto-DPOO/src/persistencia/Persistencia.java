@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import inventario.Escultura;
@@ -16,11 +17,10 @@ import inventario.Inventario;
 import inventario.Pieza;
 import inventario.Pintura;
 import inventario.Video;
-import uniandes.dpoo.aerolinea.modelo.Aerolinea;
-import uniandes.dpoo.aerolinea.modelo.cliente.Cliente;
-import uniandes.dpoo.aerolinea.modelo.cliente.ClienteCorporativo;
-import uniandes.dpoo.aerolinea.modelo.cliente.ClienteNatural;
-
+import usuarios.Usuario;
+import usuarios.Admin;
+import compradores.Comprador;
+import usuarios.Empleado;
 public class Persistencia {
 
 	private static String NOMBRE_ADMINISTRADOR="nombreAdmin";
@@ -46,7 +46,7 @@ public class Persistencia {
 	private static String ID_COMPRADOR="idComprador";
 	private static String TELEFONO_COMPRADOR="telefonoComprador";
 
-	public void cargarGaleria(String archivo, Administrador administrador) {
+	public void cargarGaleria(String archivo, Admin administrador) throws JSONException, Exception {
 		String jsonCompleto = new String( Files.readAllBytes( new File( archivo ).toPath( ) ) );
         JSONObject raiz = new JSONObject( jsonCompleto );
         cargarAdministrador( administrador, raiz.getJSONObject( "administrador" ));
@@ -54,7 +54,7 @@ public class Persistencia {
         cargarInventario(administrador, raiz.getJSONArray("piezas"));
 	}
 	
-	public void salvarGaleria( String archivo, Administrador administrador, Inventario inventario) throws IOException
+	public void salvarGaleria( String archivo, Admin administrador, Inventario inventario) throws IOException
     {
         JSONObject jobject = new JSONObject( );
         salvarAdministrador( administrador, jobject );
@@ -65,29 +65,29 @@ public class Persistencia {
         pw.close( );
     }
 	
-	public void cargarAdministrador(Administrador administrador, JSONObject jAdmin) {
+	public void cargarAdministrador(Admin administrador, JSONObject jAdmin) {
 		String nombreAdmin = jAdmin.getString(NOMBRE_ADMINISTRADOR);
-		String idAdmin = jAdmin.getString(ID_ADMINISTRADOR);
+		int idAdmin = Integer.valueOf(jAdmin.getString(ID_ADMINISTRADOR));
 		String loginAdmin = jAdmin.getString(LOGIN_ADMINISTRADOR);
 		String psswdAdmin = jAdmin.getString(PSSWD_ADMINISTRADOR);
-		new Administrador(nombreAdmin, idAdmin, loginAdmin, psswdAdmin);
+		new Admin(loginAdmin, psswdAdmin, nombreAdmin, idAdmin);
 	}
 	
-	public void salvarAdministrador(Administrador administrador, JSONObject jobject) {
+	public void salvarAdministrador(Admin administrador, JSONObject jobject) {
 		JSONObject jAdmin = new JSONObject();
 		jAdmin.put(NOMBRE_ADMINISTRADOR, administrador.getNombre());
-		jAdmin.put(ID_ADMINISTRADOR, administrador.getIdentificador());
+		jAdmin.put(ID_ADMINISTRADOR, administrador.getId());
 		jAdmin.put(LOGIN_ADMINISTRADOR, administrador.getLogin());
 		jAdmin.put(PSSWD_ADMINISTRADOR, administrador.getPassword());
 		jobject.put("Administrador",jAdmin);
 	}
 	
-	public void cargarEmpleados(Administrador administrador, JSONArray jEmpleados) {
+	public void cargarEmpleados(Admin administrador, JSONArray jEmpleados) {
 		int numEmpleados = jEmpleados.length();
 		for (int i=0; 0<numEmpleados; i++) {
 			JSONObject empleado = jEmpleados.getJSONObject(i);
 			String nombreEmpleado = empleado.getString(NOMBRE_EMPLEADO);
-			String idEmpleado = empleado.getString(ID_EMPLEADO);
+			int idEmpleado = Integer.valueOf(empleado.getString(ID_EMPLEADO));
 			String loginEmpleado = empleado.getString(LOGIN_EMPLEADO);
 			String psswdEmpleado = empleado.getString(PSSWD_EMPLEADO);
 			String cargoEmpleado = empleado.getString(CARGO_EMPLEADO);
@@ -96,21 +96,21 @@ public class Persistencia {
 		}
 	}
 		
-	public void salvarEmpleados(Administrador administrador, JSONObject jobject) {
+	public void salvarEmpleados(Admin administrador, JSONObject jobject) {
 		JSONArray jEmpleados = new JSONArray();
-		for (Empleado empleado : administrador.empleados) {
+		for (Empleado empleado : administrador.getEmpleados()) {
 			JSONObject jEmpleado = new JSONObject();
-			jEmpleado.put(NOMBRE_EMPLEADO, empleado.nombre);
-			jEmpleado.put(ID_EMPLEADO, empleado.identificador);
-			jEmpleado.put(LOGIN_EMPLEADO, empleado.login);
-			jEmpleado.put(PSSWD_EMPLEADO, empleado.password);
-			jEmpleado.put(CARGO_EMPLEADO, empleado.cargo);
+			jEmpleado.put(NOMBRE_EMPLEADO, empleado.getNombre());
+			jEmpleado.put(ID_EMPLEADO, empleado.getIdEmpleado());
+			jEmpleado.put(LOGIN_EMPLEADO, ((Usuario) empleado).getLogin());
+			jEmpleado.put(PSSWD_EMPLEADO, ((Usuario) empleado).getPassword());
+			jEmpleado.put(CARGO_EMPLEADO, empleado.getCargo());
 			jEmpleados.put(jEmpleado);
 		}
 		jobject.put("Empleados", jEmpleados);
 	}
 	
-	public void cargarInventario(Administrador administrador, JSONArray jPiezas) {
+	public void cargarInventario(Admin administrador, JSONArray jPiezas) throws Exception {
 		Inventario inventario = new Inventario();
 		int numPiezas = jPiezas.length();
 		for(int i=0; i<numPiezas; i++) {
@@ -167,7 +167,7 @@ public class Persistencia {
 						exhibida, disponible, idioma, duracion );
 			}
 			if (nuevaPieza!=null) {
-				administrador.registrarPieza(nuevaPieza);
+				administrador.registrarPieza(nuevaPieza, inventario);
 			}else {
 				throw new Exception("Tipo de Pieza inválido");
 			}
@@ -258,7 +258,7 @@ public class Persistencia {
         jobject.put( "piezas", jInventario );
 	}
 	
-	public ArrayList<Comprador> cargarCompradores(String archivo){
+	public ArrayList<Comprador> cargarCompradores(String archivo) throws IOException{
 		ArrayList<Comprador> listaCompradores = new ArrayList<Comprador>();
 		String jsonCompleto = new String( Files.readAllBytes( new File( archivo ).toPath( ) ) );
         JSONObject raiz = new JSONObject( jsonCompleto );
@@ -272,8 +272,7 @@ public class Persistencia {
         	boolean verificado = Boolean.valueOf(jComprador.getString(VERIFICADO));
         	int id = Integer.valueOf(jComprador.getString(ID_COMPRADOR));
         	int telefono = Integer.valueOf(jComprador.getString(TELEFONO_COMPRADOR)); 
-        	Comprador nuevoComprador = new Comprador(nombre, login, psswd, verificado,
-        			id, telefono);
+        	Comprador nuevoComprador = new Comprador(verificado, nombre, id, telefono, login, psswd);
         	listaCompradores.add(nuevoComprador);
         }
         return listaCompradores;

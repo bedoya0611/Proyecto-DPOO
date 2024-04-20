@@ -43,7 +43,7 @@ public class Inventario {
 		piezasDisponibles.remove(laPieza);
 		piezasBloqueadas.add(laPieza);
 	}
-	public void eliminarPieza(String titulo) {
+	public void sacarDelInventario(String titulo) {
 		Pieza laPieza = null;
 		for (Pieza pieza:piezasDisponibles) {
 			String unTitulo = pieza.getTitulo();

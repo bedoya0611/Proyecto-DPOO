@@ -2,6 +2,8 @@ package inventario;
 
 import java.util.ArrayList;
 
+import compradores.Propietario;
+
 public abstract class Pieza {
 	private String titulo;
 	private int anio;

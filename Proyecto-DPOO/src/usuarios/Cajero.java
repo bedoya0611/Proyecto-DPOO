@@ -1,21 +1,34 @@
 package usuarios;
 
-public class Cajero extends Usuario {
-    private String nombre;
-    private String identificacion;
+import ventas.Venta;
+import ventas.VentaFija;
+import ventas.Subasta;
 
-    public Cajero(String login, String password, String nombre, String identificacion) {
-        super(login, password);
-        this.nombre = nombre;
-        this.identificacion = identificacion;
+
+public class Cajero extends Empleado {
+    private String nombre;
+    private int identificador;
+
+    public Cajero(String login, String password, String nombre, int identificador) {
+        super(login, password, nombre, identificador, "Cajero");
     }
 
     public void registrarPago(Venta venta, double montoPagado) {
-        if (montoPagado == venta.getPrecioPieza()) {
-            venta.setPagoHecho(true);
-            System.out.println("Pago registrado correctamente para la pieza: " + venta.getPieza().getTitulo());
+        if  (venta.TIPO_VENTA.equals("Fija")){
+            if (montoPagado == ((VentaFija) venta).getPrecioFijo()) {
+                venta.setPagoHecho(true);
+                System.out.println("Pago registrado correctamente para la pieza: " + venta.getPieza().getTitulo());
+            } else {
+                System.out.println("Monto insuficiente para completar la venta de la pieza: " + venta.getPieza().getTitulo());
+            }
         } else {
-            System.out.println("Monto insuficiente para completar la venta de la pieza: " + venta.getPieza().getTitulo());
+            if (montoPagado >= ((Subasta) venta).getValorMinimo()) {
+                venta.setPagoHecho(true);
+                System.out.println("Pago registrado correctamente para la pieza: " + venta.getPieza().getTitulo());
+            } else {
+                System.out.println("Monto insuficiente para completar la venta de la pieza: " + venta.getPieza().getTitulo());
+            }
+
         }
     }
 
@@ -27,12 +40,12 @@ public class Cajero extends Usuario {
         this.nombre = nombre;
     }
 
-    public String getIdentificacion() {
-        return identificacion;
+    public int getidentificador() {
+        return identificador;
     }
 
-    public void setIdentificacion(String identificacion) {
-        this.identificacion = identificacion;
+    public void setidentificador(int identificador) {
+        this.identificador = identificador;
     }
 }
 

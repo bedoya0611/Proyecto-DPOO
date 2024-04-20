@@ -1,12 +1,17 @@
 package ventas;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import compradores.Compra;
+import inventario.Inventario;
+import inventario.Pieza;
+import compradores.Comprador;
+import compradores.Propietario;
 
 public class Subasta extends Venta{
 
+	public static final String TIPO_VENTA = "Subasta";
 	private int valorInicial;
 	private int valorMinimo;
 	private int ofertaActual;
@@ -14,13 +19,14 @@ public class Subasta extends Venta{
 	public static HashMap<Integer, Comprador> ofertas;
 	private boolean abierta;
 	
-	public Subasta(int inicial, int minimo, int actual, Pieza nPieza) {
+	public Subasta(int inicial, int minimo, int actual, Pieza nPieza, Inventario inventario) {
 		this.valorInicial = inicial;
 		this.valorMinimo = minimo;
 		this.ofertaActual = actual;
 		this.pieza = nPieza;
 		ofertas = new HashMap<Integer, Comprador>();
 		this.abierta = false;
+		this.inventario = inventario;
 	}
 	
 	public HashMap<Integer, Comprador> getOfertas(){
@@ -57,25 +63,25 @@ public class Subasta extends Venta{
 	
 	@Override
 	public void compra () {
-		new Compra(ganador.getId(), LocalTime.now(), ofertaFinal, pieza );
+		new Compra(ganador.getIdentificador(), LocalDateTime.now(), ofertaFinal, pieza );
 	}
 	
 	@Override
 	public void reclasificarComprador() {
-		if(ganador.getCompras().size == 0) {
-			new Propietario(ganador.getNombre, ganador.getIdentificador, ganador.getTelefono);
+		if(ganador.getCompras().size() == 0) {
+			new Propietario(ganador.isVerificado(), ganador.getNombre(), ganador.getIdentificador(), ganador.getTelefono(), ganador.getLogin(), ganador.getPassword());
 		}
 	}
 	
 	@Override
 	public void agregarHistorialCompra(Compra compra) {
-		ganador.getCompras.add(new Compra(ganador.getId(), LocalTime.now(), ofertaFinal, pieza));
+		ganador.getCompras().add(new Compra(ganador.getIdentificador(), LocalDateTime.now(), ofertaFinal, pieza));
 	}
 	
 	@Override
-	public void sacarPiezaDelInventario(Pieza pieza) {
-		Inventario.SacarDelInventario(pieza);
-		Pieza.setPropietario();
+	public void sacarPiezaDelInventario(Inventario inventario, Pieza pieza) {
+		inventario.sacarDelInventario(pieza.getTitulo());
+		pieza.setPropietario((Propietario) ganador);
 	}
 	
 	@Override
@@ -83,8 +89,8 @@ public class Subasta extends Venta{
 		if(pagoHecho == true) {
 			this.compra();
 			this.reclasificarComprador();
-			this.agregarHistorialCompra(new Compra(ganador.getId(), LocalTime.now(), ofertaFinal, pieza ));
-			this.sacarPiezaDelInventario(pieza);
+			this.agregarHistorialCompra(new Compra(ganador.getIdentificador(), LocalDateTime.now(), ofertaFinal, pieza ));
+			this.sacarPiezaDelInventario(inventario, pieza);
 		}
 	}
 }

@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": [
+        "Proyecto-DPOO\\src"
+    ],
+    "java.project.referencedLibraries": [
+        "Proyecto-DPOO\\lib\\org.json-1.6-20240205.jar"
+    ]
+}

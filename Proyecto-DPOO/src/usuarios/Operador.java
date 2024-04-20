@@ -1,17 +1,18 @@
 package usuarios;
 
-public class Operador extends Usuario {
+import ventas.ListaDeSubastas;
+import ventas.Subasta;
+
+public class Operador extends Empleado{
     private String nombre;
-    private String identificacion;
+    private int identificador;
 
     // Constructor
-    public Operador(String login, String password, String nombre, String identificacion) {
-        super(login, password);
-        this.nombre = nombre;
-        this.identificacion = identificacion;
+    public Operador(String login, String password, String nombre, int identificador) {
+        super(login, password,nombre,identificador, "Operador");
     }
 
-    public void registrarSubasta(Subasta subasta, Subastas listaDeSubastas) {
+    public void registrarSubasta(Subasta subasta, ListaDeSubastas listaDeSubastas) {
         listaDeSubastas.agregarSubasta(subasta);
         System.out.println("Subasta registrada con éxito para la pieza: " + subasta.getPieza().getTitulo());
     }
@@ -29,11 +30,7 @@ public class Operador extends Usuario {
         this.nombre = nombre;
     }
 
-    public String getIdentificacion() {
-        return identificacion;
-    }
-
-    public void setIdentificacion(String identificacion) {
-        this.identificacion = identificacion;
+    public int getIdentificador() {
+        return identificador;
     }
 }

@@ -3,6 +3,8 @@ package ventas;
 import java.util.LinkedList;
 import java.util.List;
 
+import compradores.Comprador;
+
 public class ListaDeSubastas {
 	
 	private List<Subasta> subastas;

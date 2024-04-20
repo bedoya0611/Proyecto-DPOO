@@ -1,5 +1,7 @@
 package compradores;
 
+import java.util.ArrayList;
+
 public class Comprador{
 
 	
@@ -10,13 +12,15 @@ public class Comprador{
 	private String login;
 	private String password;
 
-	public Comprador(boolean verificacion, String nNombre, int identificacion, int nTelefono, String nLogin, String contraseña) {
+	private ArrayList<Compra> compras;
+
+	public Comprador(boolean verificacion, String nNombre, int identificacion, int nTelefono, String nLogin, String password) {
 		this.verificado = verificacion;
 		this.nombre = nNombre;
 		this.identificador = identificacion;
 		this.telefono = nTelefono;
 		this.login = nLogin;
-		this.password = contraseña;
+		this.password = password;
 	}
 	
 	public boolean isVerificado() {
@@ -33,5 +37,21 @@ public class Comprador{
 	
 	public int getTelefono() {
 		return this.telefono;
+	}
+
+	public void setTelefono(int telefono){
+		this.telefono = telefono;
+	}
+
+	public String getLogin() {
+		return this.login;
+	}
+
+	public String getPassword() {
+		return this.password;
+	}
+
+	public ArrayList<Compra> getCompras() {
+		return this.compras;
 	}
 }
