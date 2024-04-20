@@ -46,10 +46,12 @@ public class Persistencia {
 	private static String ID_COMPRADOR="idComprador";
 	private static String TELEFONO_COMPRADOR="telefonoComprador";
 
-	public void cargarGaleria(String archivo, Admin administrador) throws JSONException, Exception {
+	public Persistencia(){}
+
+	public void cargarGaleria(String archivo) throws JSONException, Exception {
 		String jsonCompleto = new String( Files.readAllBytes( new File( archivo ).toPath( ) ) );
         JSONObject raiz = new JSONObject( jsonCompleto );
-        cargarAdministrador( administrador, raiz.getJSONObject( "administrador" ));
+        Admin administrador = cargarAdministrador(raiz.getJSONObject( "administrador" ));
         cargarEmpleados(administrador, raiz.getJSONArray("empleados"));
         cargarInventario(administrador, raiz.getJSONArray("piezas"));
 	}
@@ -65,12 +67,12 @@ public class Persistencia {
         pw.close( );
     }
 	
-	public void cargarAdministrador(Admin administrador, JSONObject jAdmin) {
+	public Admin cargarAdministrador(JSONObject jAdmin) {
 		String nombreAdmin = jAdmin.getString(NOMBRE_ADMINISTRADOR);
 		int idAdmin = Integer.valueOf(jAdmin.getString(ID_ADMINISTRADOR));
 		String loginAdmin = jAdmin.getString(LOGIN_ADMINISTRADOR);
 		String psswdAdmin = jAdmin.getString(PSSWD_ADMINISTRADOR);
-		new Admin(loginAdmin, psswdAdmin, nombreAdmin, idAdmin);
+		return new Admin(loginAdmin, psswdAdmin, nombreAdmin, idAdmin);
 	}
 	
 	public void salvarAdministrador(Admin administrador, JSONObject jobject) {
