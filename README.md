@@ -3,3 +3,4 @@ Integrantes:
 Juan Pablo Bedoya Cruz 202214493
 Orlando Suárez 202221593
 Sergio Ferreira 202210819
+Jorge Caro 202020807
