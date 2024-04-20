@@ -32,7 +32,7 @@ public class Persistencia {
 	private static String LOGIN_EMPLEADO="loginEmpleado";
 	private static String PSSWD_EMPLEADO="psswdEmpleado";
 	private static String CARGO_EMPLEADO="cargo";
-	private static String TIPO_PIEZA="titulo";
+	private static String TIPO_PIEZA="tipo";
 	private static String TITULO_PIEZA="titulo";
 	private static String ANIO_PIEZA="anio";
 	private static String LUGAR_PIEZA="lugar";
