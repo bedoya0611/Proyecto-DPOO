@@ -14,6 +14,7 @@ public class Impresion extends Pieza{
 		this.ancho = ancho;
 		this.alto = alto;
 		this.tecnica = tecnica;
+		this.tipoPieza = "Impresion";
 	}
 
 	public double getAncho() {
