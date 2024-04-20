@@ -12,6 +12,7 @@ public class Video extends Pieza{
 		super(titulo, anio, lugarCreacion, autores, exhibida, disponible);
 		this.idioma = idioma;
 		this.duracion = duracion;
+		this.tipoPieza = "Video";
 	}
 
 	public String getIdioma() {

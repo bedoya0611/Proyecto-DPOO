@@ -10,6 +10,7 @@ public abstract class Pieza {
 	private boolean exhibida;
 	private boolean disponible;
 	private Propietario propietario;
+	protected String tipoPieza;
 	
 	public Pieza (String titulo, int anio, String lugarCreacion, ArrayList<String> autores, boolean exhibida, boolean disponible) {
 		this.titulo = titulo;
@@ -30,6 +31,10 @@ public abstract class Pieza {
 
 	public String getLugarCreacion() {
 		return lugarCreacion;
+	}
+	
+	public String getTipoPieza() {
+		return tipoPieza;
 	}
 
 	public ArrayList<String> getAutores() {

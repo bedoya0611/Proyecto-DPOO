@@ -16,6 +16,7 @@ public class Pintura extends Pieza{
 		this.alto = alto;
 		this.tecnica = tecnica;
 		this.estilo = estilo;
+		this.tipoPieza = "Pintura";
 	}
 	public double getAncho() {
 		return ancho;

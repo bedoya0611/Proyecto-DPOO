@@ -23,6 +23,7 @@ public class Escultura extends Pieza{
 		this.peso = peso;
 		this.necesitaElectricidad = necesitaElectricidad;
 		this.detallesInstalacion = detallesInstalacion;
+		this.tipoPieza = "Escultura";
 	}
 
 	public double getAncho() {

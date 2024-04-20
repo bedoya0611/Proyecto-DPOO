@@ -13,6 +13,7 @@ public class Fotografia extends Pieza{
 		this.ancho = ancho;
 		this.alto = alto;
 		this.camara = camara;
+		this.tipoPieza = "Fotografia";
 	}
 	public double getAncho() {
 		return ancho;
