@@ -15,7 +15,7 @@ public class ConsolaUsuario extends Consola{
 	public ConsolaUsuario() {}
 	
 	private boolean verificarCredenciales(String usuario, String psswd) {
-		return Galeria.verificarCredencialesAdmin(usuario, psswd);
+		return Galeria.verificarCredencialesUsuario(usuario, psswd);
 	}
 	
 	private void imprimirMenu() {
@@ -24,11 +24,11 @@ public class ConsolaUsuario extends Consola{
 			System.out.println("------------------------------------------------");
 			System.out.println("\t\tMenú Administrador");
 			System.out.println("------------------------------------------------");
-			System.out.println("1 - Registrar Pieza");
-			System.out.println("2 - Confirmar Venta");
-			System.out.println("3 - Consultar Comprador");
-			System.out.println("4 - Verificar Comprador");
-			System.out.println("5 - Modificar Comprador");
+			System.out.println("1 - ");
+			System.out.println("2 - ");
+			System.out.println("3 - ");
+			System.out.println("4 - ");
+			System.out.println("5 - ");
 			System.out.println("0 - Salir");
 			try {
     			seleccion = Integer.valueOf(reader.readLine());

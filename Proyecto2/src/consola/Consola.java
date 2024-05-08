@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.json.JSONException;
 
+import galeria.Galeria;
 import galeria.Exceptions.FormatoIncorrectoException;
 import galeria.compradores.Comprador;
 import galeria.inventario.Inventario;
@@ -21,7 +22,7 @@ public abstract class Consola {
 		try
         {
             persistencia.cargarGaleria( "./datos/" + archivoGaleria);
-            persistencia.cargarCompradores("./datos/" + archivoUsuarios);
+            Galeria.cargarCompradores("./datos/" + archivoUsuarios);
         } catch (FormatoIncorrectoException e) {
         	e.printStackTrace( );
         }

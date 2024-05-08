@@ -1,10 +1,13 @@
 package galeria;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.json.JSONException;
 
 import galeria.Exceptions.FormatoIncorrectoException;
+import galeria.compradores.Comprador;
 import galeria.inventario.Inventario;
 import galeria.persistencia.Persistencia;
 import galeria.usuarios.Admin;
@@ -14,14 +17,25 @@ public class Galeria
 {
     private static Admin unAdmin;
     private static Inventario unInventario;
+    private static Empleado unEmpleado;
+    private static Comprador unComprador;
     private static Persistencia persistencia;
+    private static HashMap<String, Comprador> compradores;
 
     /**
      * Es un método que corre la aplicación y realmente no hace nada interesante: sólo muestra cómo se podría utilizar la clase Aerolínea para hacer pruebas.
+     * @throws IOException 
      * @throws Exception 
      * @throws JSONException 
      */
-
+    
+    public static void cargarCompradores(String archivo) throws IOException {
+    	ArrayList<Comprador> listaCompradores= persistencia.cargarCompradores(archivo); 
+    	for(Comprador comprador:listaCompradores) {
+    		compradores.put(comprador.getLogin(), comprador);
+    	}
+    }
+    
     public void correrAplicacion( ) throws JSONException, Exception
     {
         try
@@ -51,14 +65,14 @@ public class Galeria
     //La primera posición indica si las credenciales son correctas
     //La segunda posición indica true si es Operador, false si es Cajero
     public static boolean[] verificarCredencialesEmpleado( String usuario, String psswd ){
-    	Empleado elEmpleado = unAdmin.getEmpleados().get(usuario);
+    	unEmpleado = unAdmin.getEmpleados().get(usuario);
     	boolean[] retorno = {false, false};
-    	if (elEmpleado == null){
+    	if (unEmpleado == null){
     		return retorno;
     		}
-    	retorno[0] =  elEmpleado.verificarPassword(psswd);
+    	retorno[0] =  unEmpleado.verificarPassword(psswd);
     	boolean cargoEmpleado;
-    	if (elEmpleado.getCargo()=="Cajero") {
+    	if (unEmpleado.getCargo()=="Cajero") {
     		cargoEmpleado = false;
     	} else {
     		cargoEmpleado = true;
@@ -74,5 +88,13 @@ public class Galeria
     	}
     	if (!unAdmin.getLogin().equals(usuario)) {return false;}
     	return unAdmin.verificarPassword(psswd);
+    }
+    
+    public static boolean verificarCredencialesUsuario(String usuario, String psswd) {
+    	unComprador = compradores.get(usuario);
+    	if (unComprador == null) {
+    		return false;
+    	}
+    	return unComprador.verificarPasswd(psswd);
     }
 }
