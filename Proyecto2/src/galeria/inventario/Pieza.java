@@ -1,27 +1,52 @@
 package galeria.inventario;
 
 import java.util.ArrayList;
-
 import galeria.compradores.Propietario;
 
 public abstract class Pieza {
-	private String titulo;
-	private int anio;
-	private String lugarCreacion;
-	private ArrayList<String> autores;
-	private boolean exhibida;
-	private boolean disponible;
-	private Propietario propietario;
-	protected String tipoPieza;
-	
-	public Pieza (String titulo, int anio, String lugarCreacion, ArrayList<String> autores, boolean exhibida, boolean disponible) {
-		this.titulo = titulo;
-		this.anio = anio;
-		this.lugarCreacion = lugarCreacion;
-		this.autores = autores;
-		this.exhibida = exhibida;
-		this.disponible = disponible;
-	}
+    private String titulo;
+    private int anio;
+    private String lugarCreacion;
+    private ArrayList<String> autores;
+    private boolean exhibida;
+    private boolean disponible;
+    private Propietario propietario;
+    private double precioVenta;
+    private String fechaVenta;
+    private Artista creador;
+    protected String tipoPieza;
+    
+    public Pieza(String titulo, int anio, String lugarCreacion, ArrayList<String> autores, boolean exhibida, boolean disponible, Artista creador) {
+        this.titulo = titulo;
+        this.anio = anio;
+        this.lugarCreacion = lugarCreacion;
+        this.autores = autores;
+        this.exhibida = exhibida;
+        this.disponible = disponible;
+        this.creador = creador;
+    }
+
+    public void venderPieza(double precio, String fecha) {
+        this.precioVenta = precio;
+        this.fechaVenta = fecha;
+        this.disponible = false;
+    }
+
+    public double getPrecioVenta() {
+        return precioVenta;
+    }
+
+    public String getFechaVenta() {
+        return fechaVenta;
+    }
+
+    public Artista getCreador() {
+        return creador;
+    }
+
+    public void setCreador(Artista creador) {
+        this.creador = creador;
+    }
 
 	public String getTitulo() {
 		return titulo;
