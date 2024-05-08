@@ -1,4 +1,4 @@
-package galeria.compradores;
+package compradores;
 
 
 public class Propietario extends Comprador{
