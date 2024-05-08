@@ -54,4 +54,9 @@ public class Comprador{
 	public ArrayList<Compra> getCompras() {
 		return this.compras;
 	}
+	
+	public boolean verificarPasswd(String psswd) {
+		return this.password.equals(psswd);
+	}
+	
 }

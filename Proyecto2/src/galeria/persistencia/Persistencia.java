@@ -1,6 +1,7 @@
 package galeria.persistencia;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -102,7 +103,8 @@ public class Persistencia {
 		
 	public void salvarEmpleados(Admin administrador, JSONObject jobject) {
 		JSONArray jEmpleados = new JSONArray();
-		for (Empleado empleado : administrador.getEmpleados()) {
+		ArrayList<Empleado> listaEmpleados = new ArrayList<Empleado>(administrador.getEmpleados().values());
+		for (Empleado empleado : listaEmpleados) {
 			JSONObject jEmpleado = new JSONObject();
 			jEmpleado.put(NOMBRE_EMPLEADO, empleado.getNombre());
 			jEmpleado.put(ID_EMPLEADO, empleado.getIdEmpleado());
@@ -284,7 +286,8 @@ public class Persistencia {
         return listaCompradores;
 	}
 	
-	public void salvarCompradores(ArrayList<Comprador> listaCompradores, JSONObject jobject) {
+	public void salvarCompradores(String archivo, ArrayList<Comprador> listaCompradores) throws FileNotFoundException {
+		JSONObject jobject = new JSONObject( );
 		JSONArray jCompradores = new JSONArray();
 		for(Comprador comprador : listaCompradores) {
 			JSONObject jComprador = new JSONObject();
@@ -297,5 +300,8 @@ public class Persistencia {
 			jCompradores.put(jComprador);
 		}
 		jobject.put("compradores", jCompradores);
+		PrintWriter pw = new PrintWriter( archivo );
+		jobject.write( pw, 2, 0 );
+		pw.close( );
 	}
 }

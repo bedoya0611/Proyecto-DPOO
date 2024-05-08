@@ -1,0 +1,36 @@
+{
+	"administrador": {
+        "nombreAdmin": "Juan",
+        "idAdmin": 1010,
+        "loginAdmin": "Admin1",
+        "psswdAdmin":"1234"
+    },
+    "empleados":[
+    {
+    "nombreEmpleado":"operador",
+    "idEmpleado":2020,
+    "loginEmpleado":"operador1",
+    "psswdEmpleado":"1234",
+    "cargo":"Operador"
+    },
+    {
+    "nombreEmpleado":"cajero",
+    "idEmpleado":3030,
+    "loginEmpleado":"cajero1",
+    "psswdEmpleado":"1234",
+    "cargo":"Cajero"
+    }],
+    "piezas":[{
+        "tipo": "Pintura",
+        "titulo": "pintu",
+        "anio": 2020,
+        "lugar": "bogota",
+        "autores": ["Jose"],
+        "exhibida": false,
+        "disponible": true,
+        "ancho":24.5,
+        "alto":30.2,
+        "tecnica":"oleo",
+        "estilo":"cubismo"
+    }]
+}

@@ -10,8 +10,8 @@ public abstract class Usuario {
         this.password = password;
     }
 
-    public boolean verificarCredenciales(String login, String password) {
-        return this.login.equals(login) && this.password.equals(password);
+    public boolean verificarPassword(String password) {
+        return this.password.equals(password);
     }
 
     public void cambiarPassword(String nuevoPassword) {

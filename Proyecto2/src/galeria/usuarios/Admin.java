@@ -1,6 +1,7 @@
 package galeria.usuarios;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import galeria.Exceptions.PiezaDuplicadaException;
@@ -12,7 +13,7 @@ import galeria.ventas.Venta;
 public class Admin extends Usuario {
     private String nombre;
     private int id;
-    private ArrayList<Empleado> empleados = new ArrayList<Empleado>();
+    private HashMap<String, Empleado> empleados = new HashMap<String, Empleado>();
 
     public Admin(String login, String password, String nombre, int id) {
         super(login, password);
@@ -45,7 +46,7 @@ public class Admin extends Usuario {
         else {
             nuevoEmpleado = new Cajero(login, password, nombre, identificador);
         }
-        empleados.add(nuevoEmpleado);
+        empleados.put(nuevoEmpleado.getLogin(), nuevoEmpleado);
     }
 
     public Comprador consultarComprador(int id, List<Comprador> compradores) {
@@ -81,7 +82,7 @@ public class Admin extends Usuario {
         this.id = id;
     }
 
-    public ArrayList<Empleado> getEmpleados(){
+    public HashMap<String, Empleado> getEmpleados(){
         return empleados;
     }
 }
