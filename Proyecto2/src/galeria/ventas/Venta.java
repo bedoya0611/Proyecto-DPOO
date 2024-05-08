@@ -33,6 +33,10 @@ public abstract class Venta {
 	public Pieza getPieza() {
 		return this.pieza;
 	}
+	
+	public boolean getPagoHecho() {
+		return this.pagoHecho;
+	}
 
 	public void setPagoHecho(boolean pagoHecho) {
 		this.pagoHecho = pagoHecho;

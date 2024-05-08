@@ -45,8 +45,15 @@ public class Subasta extends Venta{
 		return this.ofertaActual;
 	}
 	
+	public Pieza getPieza() {
+		return this.pieza;
+	}
 	public void setOfertaActual (int valor) {
 		this.ofertaActual = valor;
+	}
+	
+	public void setPieza(Pieza pieza) {
+		this.pieza = pieza;
 	}
 	
 	public void iniciarSubasta() {

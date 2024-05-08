@@ -2,12 +2,13 @@ package galeria.inventario;
 
 import java.util.ArrayList;
 import galeria.compradores.Propietario;
+import galeria.usuarios.Artista;
 
 public abstract class Pieza {
     private String titulo;
     private int anio;
     private String lugarCreacion;
-    private ArrayList<String> autores;
+    private ArrayList<Artista> autores;
     private boolean exhibida;
     private boolean disponible;
     private Propietario propietario;
@@ -16,14 +17,13 @@ public abstract class Pieza {
     private Artista creador;
     protected String tipoPieza;
     
-    public Pieza(String titulo, int anio, String lugarCreacion, ArrayList<String> autores, boolean exhibida, boolean disponible, Artista creador) {
+    public Pieza(String titulo, int anio, String lugarCreacion, boolean exhibida, boolean disponible, ArrayList<Artista> autores) {
         this.titulo = titulo;
         this.anio = anio;
         this.lugarCreacion = lugarCreacion;
         this.autores = autores;
         this.exhibida = exhibida;
         this.disponible = disponible;
-        this.creador = creador;
     }
 
     public void venderPieza(double precio, String fecha) {
@@ -64,7 +64,7 @@ public abstract class Pieza {
 		return tipoPieza;
 	}
 
-	public ArrayList<String> getAutores() {
+	public ArrayList<Artista> getAutores() {
 		return autores;
 	}
 

@@ -2,6 +2,8 @@ package galeria.inventario;
 
 import java.util.ArrayList;
 
+import galeria.usuarios.Artista;
+
 public class Escultura extends Pieza{
 	
 	private double ancho;
@@ -12,10 +14,10 @@ public class Escultura extends Pieza{
 	private boolean necesitaElectricidad;
 	private String detallesInstalacion;
 	
-	public Escultura(String titulo, int anio, String lugarCreacion, ArrayList<String> autores, boolean exhibida,
+	public Escultura(String titulo, int anio, String lugarCreacion, ArrayList<Artista> autores, boolean exhibida,
 			boolean disponible, double ancho, double alto, double profundidad, String material, double peso,
 			boolean necesitaElectricidad, String detallesInstalacion) {
-		super(titulo, anio, lugarCreacion, autores, exhibida, disponible);
+		super(titulo, anio, lugarCreacion, disponible, exhibida, autores);
 		this.ancho = ancho;
 		this.alto = alto;
 		this.profundidad = profundidad;

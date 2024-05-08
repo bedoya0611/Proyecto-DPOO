@@ -20,6 +20,7 @@ import galeria.inventario.Pintura;
 import galeria.inventario.Video;
 import galeria.usuarios.Usuario;
 import galeria.usuarios.Admin;
+import galeria.usuarios.Artista;
 import galeria.compradores.Comprador;
 import galeria.Galeria;
 import galeria.usuarios.Empleado;
@@ -41,6 +42,8 @@ public class Persistencia {
 	private static String AUTORES_PIEZA="autores";
 	private static String EXHIBIDA="exhibida";
 	private static String DISPONIBLE="disponible";
+	private static String NOMBRE_AUTOR="nombreAutor";
+	private static String ID_AUTOR="idAutor";
 	private static String NOMBRE_COMPRADOR="nombreComprador";
 	private static String LOGIN_COMPRADOR="loginComprador";
 	private static String PSSWD_COMPRADOR="psswdComprador";
@@ -125,12 +128,13 @@ public class Persistencia {
 			String titulo = pieza.getString(TITULO_PIEZA);
 			int anio = pieza.getInt(ANIO_PIEZA);
 			String lugar = pieza.getString(LUGAR_PIEZA);
-			ArrayList<String> listaAutores = new ArrayList<String>();
+			ArrayList<Artista> listaAutores = new ArrayList<Artista>();
 			JSONArray autores = pieza.getJSONArray(AUTORES_PIEZA);
 			int numAutores = autores.length();
 			for(int j=0;j<numAutores; j++) {
-				String autor = autores.getString(j);
-				listaAutores.add(autor);
+				JSONObject autor = autores.getJSONObject(j);
+				Artista artista = cargarArtista(autor);
+				listaAutores.add(artista);
 			}
 			boolean exhibida = pieza.getBoolean(EXHIBIDA);
 			boolean disponible = pieza.getBoolean(DISPONIBLE);
@@ -264,6 +268,13 @@ public class Persistencia {
         }
 
         jobject.put( "piezas", jInventario );
+	}
+	
+	public Artista cargarArtista(JSONObject jobject) {
+		String nombre = jobject.getString(NOMBRE_AUTOR);
+		int id = jobject.getInt(ID_AUTOR);
+		Artista artista = new Artista(nombre, id);
+		return artista;
 	}
 	
 	public ArrayList<Comprador> cargarCompradores(String archivo) throws IOException{
