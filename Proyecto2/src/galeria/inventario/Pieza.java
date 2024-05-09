@@ -16,6 +16,7 @@ public abstract class Pieza {
     private String fechaVenta;
     private Artista creador;
     protected String tipoPieza;
+    public ArrayList<String> ventas;
     
     public Pieza(String titulo, int anio, String lugarCreacion, boolean exhibida, boolean disponible, ArrayList<Artista> autores) {
         this.titulo = titulo;
@@ -101,10 +102,7 @@ public abstract class Pieza {
         descripcion += "titulo: '" + pieza.getTitulo() + "', " + pieza.getAnio() + ", " +
         			   pieza.getLugarCreacion() + ", " + pieza.getTipoPieza() + ".";
         descripcion += (pieza.isExhibida() ? " (Exhibida)" : " (No Exhibida)");
-        if (!pieza.isDisponible()) {
-            descripcion += ". Vendida por: $" + pieza.getPrecioVenta() +
-                           " el " + pieza.getFechaVenta() + ". Propietario :" + pieza.getPropietario();
-        }
+        descripcion += ". El historial de ventas de esta pieza es: " + ventas;
         historia.add(descripcion);
         return historia;
 	}
