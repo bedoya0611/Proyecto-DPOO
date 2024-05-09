@@ -52,6 +52,13 @@ public class VentaFija extends Venta{
 		inventario.sacarDelInventario(pieza.getTitulo());
 		pieza.setPropietario((Propietario) comprador);
 	}
+
+	@Override
+	public void registrarVenta() {
+		String registro = "Comprado por: " + comprador.getNombre() 
+		+ ", " + LocalDateTime.now() + ", en $" + precioFijo + ".";
+		pieza.ventas.add(registro);
+	}
 	
 	@Override
 	public void realizarVenta() {
@@ -60,6 +67,7 @@ public class VentaFija extends Venta{
 			this.reclasificarComprador();
 			this.agregarHistorialCompra(new Compra(comprador.getIdentificador(), LocalDateTime.now(), precioFijo, pieza ));
 			this.sacarPiezaDelInventario(inventario, pieza);
+			this.registrarVenta();
 		}
 	}
 }
