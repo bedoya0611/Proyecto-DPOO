@@ -19,7 +19,7 @@ public class ArtistaTest {
 
     @BeforeEach
     void setUp() {
-        artista = new Artista("Frida Kahlo", 1);
+        artista = new Artista("Frida Kahlo");
         ArrayList<Artista> artistas = new ArrayList<Artista>();
         artistas.add(artista);
         pieza1 = new Pintura("Autorretrato con collar de espinas", 1940, "Ciudad de México", 

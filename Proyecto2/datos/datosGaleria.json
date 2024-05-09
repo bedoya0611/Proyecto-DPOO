@@ -25,7 +25,7 @@
         "titulo": "pintu",
         "anio": 2020,
         "lugar": "bogota",
-        "autores": ["Jose"],
+        "autores": [{"nombreAutor":"Jose"}],
         "exhibida": false,
         "disponible": true,
         "ancho":24.5,

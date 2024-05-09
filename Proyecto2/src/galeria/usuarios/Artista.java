@@ -6,12 +6,10 @@ import galeria.inventario.Pieza;
 
 public class Artista {
     private String nombre;
-    private int identificacion;
     private List<Pieza> obras;
 
-    public Artista(String nombre, int identificacion) {
+    public Artista(String nombre) {
         this.nombre = nombre;
-        this.identificacion = identificacion;
         this.obras = new ArrayList<>();
     }
 
@@ -43,14 +41,6 @@ public class Artista {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public int getIdentificacion() {
-        return identificacion;
-    }
-
-    public void setIdentificacion(int identificacion) {
-        this.identificacion = identificacion;
     }
 
     public List<Pieza> getObras() {

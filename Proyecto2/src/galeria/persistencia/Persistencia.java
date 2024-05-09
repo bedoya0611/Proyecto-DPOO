@@ -43,7 +43,6 @@ public class Persistencia {
 	private static String EXHIBIDA="exhibida";
 	private static String DISPONIBLE="disponible";
 	private static String NOMBRE_AUTOR="nombreAutor";
-	private static String ID_AUTOR="idAutor";
 	private static String NOMBRE_COMPRADOR="nombreComprador";
 	private static String LOGIN_COMPRADOR="loginComprador";
 	private static String PSSWD_COMPRADOR="psswdComprador";
@@ -272,8 +271,7 @@ public class Persistencia {
 	
 	public Artista cargarArtista(JSONObject jobject) {
 		String nombre = jobject.getString(NOMBRE_AUTOR);
-		int id = jobject.getInt(ID_AUTOR);
-		Artista artista = new Artista(nombre, id);
+		Artista artista = new Artista(nombre);
 		return artista;
 	}
 	
