@@ -26,6 +26,9 @@ public abstract class Venta {
 	
 	public void sacarPiezaDelInventario(Inventario inventario, Pieza pieza) {
 	}
+
+	public void registrarVenta() {
+	}
 	
 	public void realizarVenta() {
 	}
