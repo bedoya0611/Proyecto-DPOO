@@ -91,5 +91,22 @@ public abstract class Pieza {
 	public void setPropietario(Propietario propietario) {
 		this.propietario = propietario;
 	}
+
+	public List<String> obtenerHistoriaPieza(Pieza pieza) {
+        List<String> historia = new ArrayList<>();   
+        String descripcion = "Autores: ";
+        for(Artista autor : pieza.getAutores()) {
+        	descripcion +=  autor.getNombre() + ", ";
+        }
+        descripcion += "titulo: '" + pieza.getTitulo() + "', " + pieza.getAnio() + ", " +
+        			   pieza.getLugarCreacion() + ", " + pieza.getTipoPieza() + ".";
+        descripcion += (pieza.isExhibida() ? " (Exhibida)" : " (No Exhibida)");
+        if (!pieza.isDisponible()) {
+            descripcion += ". Vendida por: $" + pieza.getPrecioVenta() +
+                           " el " + pieza.getFechaVenta() + ". Propietario :" + pieza.getPropietario();
+        }
+        historia.add(descripcion);
+        return historia;
+	}
 	
 }
