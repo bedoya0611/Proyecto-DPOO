@@ -90,6 +90,13 @@ public class Subasta extends Venta{
 		inventario.sacarDelInventario(pieza.getTitulo());
 		pieza.setPropietario((Propietario) ganador);
 	}
+
+	@Override
+	public void registrarVenta() {
+		String registro = "Comprado por: " + ganador.getNombre() 
+		+ ", " + LocalDateTime.now() + ", en $" + ofertaFinal + ".";
+		pieza.ventas.add(registro);
+	}
 	
 	@Override
 	public void realizarVenta() {
@@ -98,6 +105,7 @@ public class Subasta extends Venta{
 			this.reclasificarComprador();
 			this.agregarHistorialCompra(new Compra(ganador.getIdentificador(), LocalDateTime.now(), ofertaFinal, pieza ));
 			this.sacarPiezaDelInventario(inventario, pieza);
+			this.registrarVenta();
 		}
 	}
 }
