@@ -12,7 +12,7 @@ public class Impresion extends Pieza{
 	
 	public Impresion(String titulo, int anio, String lugarCreacion, ArrayList<Artista> autores, boolean exhibida,
 			boolean disponible, double ancho, double alto, String tecnica) {
-		super(titulo, anio, lugarCreacion, disponible, exhibida, autores);
+		super(titulo, anio, lugarCreacion, exhibida, disponible, autores);
 		this.ancho = ancho;
 		this.alto = alto;
 		this.tecnica = tecnica;

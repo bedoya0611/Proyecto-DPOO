@@ -22,8 +22,10 @@ import galeria.usuarios.Usuario;
 import galeria.usuarios.Admin;
 import galeria.usuarios.Artista;
 import galeria.compradores.Comprador;
+import galeria.compradores.Propietario;
 import galeria.Galeria;
 import galeria.usuarios.Empleado;
+import galeria.ventas.*;
 public class Persistencia {
 
 	private static String NOMBRE_ADMINISTRADOR="nombreAdmin";
@@ -58,7 +60,8 @@ public class Persistencia {
         Admin administrador = cargarAdministrador(raiz.getJSONObject( "administrador" ));
         cargarEmpleados(administrador, raiz.getJSONArray("empleados"));
         Galeria.setAdmin(administrador);
-        cargarInventario(administrador, raiz.getJSONArray("piezas"));
+        Inventario inventario = cargarInventario(administrador, raiz.getJSONArray("piezas"));
+        cargarSubastas(inventario, raiz.getJSONArray("subastasAbiertas"));
 	}
 	
 	public void salvarGaleria( String archivo, Admin administrador, Inventario inventario) throws IOException
@@ -67,6 +70,7 @@ public class Persistencia {
         salvarAdministrador( administrador, jobject );
         salvarEmpleados(administrador, jobject);
         salvarInventario(inventario, jobject);
+        salvarSubastas(inventario, jobject);
         PrintWriter pw = new PrintWriter( archivo );
         jobject.write( pw, 2, 0 );
         pw.close( );
@@ -118,8 +122,9 @@ public class Persistencia {
 		jobject.put("empleados", jEmpleados);
 	}
 	
-	public void cargarInventario(Admin administrador, JSONArray jPiezas) throws Exception {
+	public Inventario cargarInventario(Admin administrador, JSONArray jPiezas) throws Exception {
 		Inventario inventario = new Inventario();
+		ArrayList<Artista> artistas = new ArrayList<Artista>();
 		int numPiezas = jPiezas.length();
 		for(int i=0; i<numPiezas; i++) {
 			JSONObject pieza = jPiezas.getJSONObject(i);
@@ -135,9 +140,28 @@ public class Persistencia {
 				Artista artista = cargarArtista(autor);
 				listaAutores.add(artista);
 			}
+			artistas.addAll(listaAutores);
 			boolean exhibida = pieza.getBoolean(EXHIBIDA);
 			boolean disponible = pieza.getBoolean(DISPONIBLE);
+			String propietario = pieza.getString("propietario");
 			Pieza nuevaPieza = null;
+			JSONObject jVenta = pieza.getJSONObject("venta");
+			String tipoVenta = jVenta.getString("tipoVenta");
+			Venta venta = null;
+			if (tipoVenta.equals("Subasta")) {
+				int vInicial = jVenta.getInt("valorInicial");
+				int vMinimo = jVenta.getInt("valorMinimo");
+				int ofertaActual = jVenta.getInt("ofertaActual");
+				boolean abierta = jVenta.getBoolean("abierta");
+				venta = new Subasta(vInicial, vMinimo, ofertaActual,null);
+				((Subasta) venta).setAbierta(abierta);
+			}else if (tipoVenta.equals("Fija")) {
+				int precio = jVenta.getInt("precioFijo");
+				String comprador = jVenta.getString("comprador");
+				Comprador comprador1 = Galeria.getCompradores().get(comprador);
+				venta = new VentaFija(precio, comprador1);
+			}
+			
 			if (tipo.equals("Pintura")) {
 				double ancho = pieza.getDouble("ancho");
 				double alto = pieza.getDouble("alto");
@@ -175,28 +199,62 @@ public class Persistencia {
 						exhibida, disponible, idioma, duracion );
 			}
 			if (nuevaPieza!=null) {
+				if (venta != null) {
+					venta.setPieza(nuevaPieza);
+					nuevaPieza.setVenta(venta);
+				}
 				administrador.registrarPieza(nuevaPieza, inventario);
 			}else {
 				throw new Exception("Tipo de Pieza inválido");
 			}
+			if(!propietario.equals("")) {
+			nuevaPieza.setPropietario((Propietario) Galeria.getCompradores().get(propietario));
+			}
 		}
 		Galeria.setInventario(inventario);
+		Galeria.setArtistas(artistas);
+		return inventario;
 	}
 
 
 	
 	public void salvarInventario(Inventario inventario, JSONObject jobject) {
 		JSONArray jInventario = new JSONArray( );
-        for( Pieza pieza : inventario.getPiezasDisponibles( ) )
+		ArrayList<Pieza> totalPiezas = inventario.getPiezasDisponibles();
+		totalPiezas.addAll(inventario.getPiezasBloqueadas());
+        for( Pieza pieza : totalPiezas)
         {
         	JSONObject jPieza = new JSONObject( );
+        	Venta venta = pieza.getVenta();
+        	JSONObject jVenta = new JSONObject();
+        	if (venta!=null) {
+        		String tipoVenta = venta.getTipo();
+        		jVenta.put("tipoVenta", tipoVenta);
+        		if(tipoVenta.equals("Subasta")) {
+        			jVenta.put("valorInicial", ((Subasta) venta).getValorInicial());
+        			jVenta.put("valorMinimo", ((Subasta) venta).getValorMinimo());
+        			jVenta.put("ofertaActual", ((Subasta) venta).getOfertaActual());
+        			jVenta.put("abierta", ((Subasta) venta).isAbierta());
+        		} else {
+        			jVenta.put("precioFijo", ((VentaFija) venta).getPrecioFijo());
+        		}
+        	}else {
+        		jVenta.put("tipoVenta", "");
+        	}
+        	jPieza.put("venta", jVenta);
             if( pieza.getTipoPieza().equals("Escultura") )
             {
             	jPieza.put( TIPO_PIEZA, "Escultura");
             	jPieza.put( TITULO_PIEZA, pieza.getTitulo());
             	jPieza.put( ANIO_PIEZA, pieza.getAnio());
             	jPieza.put( LUGAR_PIEZA, pieza.getLugarCreacion());
-            	jPieza.put( AUTORES_PIEZA, new JSONArray(pieza.getAutores()));
+            	JSONArray jautores = new JSONArray();
+            	for (Artista autor: pieza.getAutores()) {
+            		JSONObject jautor = new JSONObject();
+            		jautor.put(NOMBRE_AUTOR, autor.getNombre());
+            		jautores.put(jautor);
+            	}
+            	jPieza.put( AUTORES_PIEZA, jautores);
             	jPieza.put( EXHIBIDA, pieza.isExhibida());
             	jPieza.put( DISPONIBLE, pieza.isDisponible());
             	jPieza.put( "ancho", ((Escultura) pieza).getAncho());
@@ -205,8 +263,19 @@ public class Persistencia {
             	jPieza.put( "material", ((Escultura) pieza).getMaterial());
             	jPieza.put( "peso", ((Escultura) pieza).getPeso());
             	jPieza.put( "necesitaElectricidad", ((Escultura) pieza).isNecesitaElectricidad());
-            	jPieza.put( "detalles", ((Escultura) pieza).getDetallesInstalacion());
-                jInventario.put( jPieza );
+            	jPieza.put( "detallesInstalacion", ((Escultura) pieza).getDetallesInstalacion());
+            	Propietario propietario = pieza.getPropietario();
+            	if(propietario != null) {
+            		jPieza.put("propietario", propietario.getLogin());
+            	}else {
+            		jPieza.put("propietario", "");
+            	}
+            	if(propietario != null) {
+            		jPieza.put("propietario", propietario.getLogin());
+            	}else {
+            		jPieza.put("propietario", "");
+                }
+            	jInventario.put( jPieza );
             }
             else if(pieza.getTipoPieza().equals("Fotografia"))
             {
@@ -214,12 +283,24 @@ public class Persistencia {
             	jPieza.put( TITULO_PIEZA, pieza.getTitulo() );
             	jPieza.put( ANIO_PIEZA, pieza.getAnio());
             	jPieza.put( LUGAR_PIEZA, pieza.getLugarCreacion());
-            	jPieza.put( AUTORES_PIEZA, new JSONArray(pieza.getAutores()) );
+            	JSONArray jautores = new JSONArray();
+            	for (Artista autor: pieza.getAutores()) {
+            		JSONObject jautor = new JSONObject();
+            		jautor.put(NOMBRE_AUTOR, autor.getNombre());
+            		jautores.put(jautor);
+            	}
+            	jPieza.put( AUTORES_PIEZA, jautores);
             	jPieza.put( EXHIBIDA, pieza.isExhibida() );
             	jPieza.put( DISPONIBLE, pieza.isDisponible() );
             	jPieza.put( "ancho", ((Fotografia) pieza).getAncho());
             	jPieza.put( "alto", ((Fotografia) pieza).getAlto());
             	jPieza.put( "camara", ((Fotografia)pieza).getCamara());
+            	Propietario propietario = pieza.getPropietario();
+            	if(propietario != null) {
+            		jPieza.put("propietario", propietario.getLogin());
+            	}else {
+            		jPieza.put("propietario", "");
+            	}
             	jInventario.put(jPieza);
             }
             else if(pieza.getTipoPieza().equals("Impresion"))
@@ -228,12 +309,24 @@ public class Persistencia {
             	jPieza.put( TITULO_PIEZA, pieza.getTitulo() );
             	jPieza.put( ANIO_PIEZA, pieza.getAnio());
             	jPieza.put( LUGAR_PIEZA, pieza.getLugarCreacion());
-            	jPieza.put( AUTORES_PIEZA, new JSONArray(pieza.getAutores()) );
+            	JSONArray jautores = new JSONArray();
+            	for (Artista autor: pieza.getAutores()) {
+            		JSONObject jautor = new JSONObject();
+            		jautor.put(NOMBRE_AUTOR, autor.getNombre());
+            		jautores.put(jautor);
+            	}
+            	jPieza.put( AUTORES_PIEZA, jautores);
             	jPieza.put( EXHIBIDA, pieza.isExhibida() );
             	jPieza.put( DISPONIBLE, pieza.isDisponible() );
             	jPieza.put( "ancho", ((Impresion) pieza).getAncho());
             	jPieza.put( "alto", ((Impresion) pieza).getAlto());
             	jPieza.put( "tecnica", ((Impresion)pieza).getTecnica());
+            	Propietario propietario = pieza.getPropietario();
+            	if(propietario != null) {
+            		jPieza.put("propietario", propietario.getLogin());
+            	}else {
+            		jPieza.put("propietario", "");
+            	}
             	jInventario.put(jPieza);
             }
             else if(pieza.getTipoPieza().equals("Pintura"))
@@ -242,13 +335,25 @@ public class Persistencia {
             	jPieza.put( TITULO_PIEZA, pieza.getTitulo() );
             	jPieza.put( ANIO_PIEZA, pieza.getAnio());
             	jPieza.put( LUGAR_PIEZA, pieza.getLugarCreacion());
-            	jPieza.put( AUTORES_PIEZA, new JSONArray(pieza.getAutores()) );
+            	JSONArray jautores = new JSONArray();
+            	for (Artista autor: pieza.getAutores()) {
+            		JSONObject jautor = new JSONObject();
+            		jautor.put(NOMBRE_AUTOR, autor.getNombre());
+            		jautores.put(jautor);
+            	}
+            	jPieza.put( AUTORES_PIEZA, jautores);
             	jPieza.put( EXHIBIDA, pieza.isExhibida() );
             	jPieza.put( DISPONIBLE, pieza.isDisponible() );
             	jPieza.put( "ancho", ((Pintura) pieza).getAncho());
             	jPieza.put( "alto", ((Pintura) pieza).getAlto());
             	jPieza.put( "estilo", ((Pintura)pieza).getEstilo());
             	jPieza.put( "tecnica", ((Pintura)pieza).getTecnica());
+            	Propietario propietario = pieza.getPropietario();
+            	if(propietario != null) {
+            		jPieza.put("propietario", propietario.getLogin());
+            	}else {
+            		jPieza.put("propietario", "");
+            	}
             	jInventario.put(jPieza);
             }
             else if(pieza.getTipoPieza().equals("Video"))
@@ -257,11 +362,23 @@ public class Persistencia {
             	jPieza.put( TITULO_PIEZA, pieza.getTitulo() );
             	jPieza.put( ANIO_PIEZA, pieza.getAnio());
             	jPieza.put( LUGAR_PIEZA, pieza.getLugarCreacion());
-            	jPieza.put( AUTORES_PIEZA, new JSONArray(pieza.getAutores()) );
+            	JSONArray jautores = new JSONArray();
+            	for (Artista autor: pieza.getAutores()) {
+            		JSONObject jautor = new JSONObject();
+            		jautor.put(NOMBRE_AUTOR, autor.getNombre());
+            		jautores.put(jautor);
+            	}
+            	jPieza.put( AUTORES_PIEZA, jautores);
             	jPieza.put( EXHIBIDA, pieza.isExhibida() );
             	jPieza.put( DISPONIBLE, pieza.isDisponible() );
             	jPieza.put( "duracion", ((Video) pieza).getDuracion());
             	jPieza.put( "idioma", ((Video)pieza).getIdioma());
+            	Propietario propietario = pieza.getPropietario();
+            	if(propietario != null) {
+            		jPieza.put("propietario", propietario.getLogin());
+            	}else {
+            		jPieza.put("propietario", "");
+            	}
             	jInventario.put(jPieza);
             }
         }
@@ -273,6 +390,54 @@ public class Persistencia {
 		String nombre = jobject.getString(NOMBRE_AUTOR);
 		Artista artista = new Artista(nombre);
 		return artista;
+	}
+	
+	public void cargarSubastas(Inventario inventario, JSONArray jSubastas) {
+		int numListas = jSubastas.length();
+		ArrayList<ListaDeSubastas> abiertas = new ArrayList<ListaDeSubastas>();
+		ListaDeSubastas nueva = null;
+		for (int i=0; i<numListas; i++) {
+			nueva = new ListaDeSubastas();
+			JSONObject jLista = jSubastas.getJSONObject(i);
+			JSONArray piezas = jLista.getJSONArray("piezas");
+			ArrayList<Subasta> subastas = new ArrayList<Subasta>();
+			for (int j=0; j<piezas.length(); j++) {
+				String titulo = piezas.getString(j);
+				Pieza laPieza = inventario.buscarPiezaPorTitulo(titulo,inventario.getPiezasDisponibles());
+				subastas.add((Subasta) laPieza.getVenta());
+			}
+			nueva.setSubastas(subastas);
+			
+			JSONArray usuarios = jLista.getJSONArray("participantes");
+			ArrayList<Comprador> participantes = new ArrayList<Comprador>();
+			for (int j=0; j<usuarios.length(); j++) {
+				String usuario = usuarios.getString(j);
+				Comprador participante = Galeria.consultarComprador(usuario);
+				participantes.add(participante);
+			}
+			nueva.setParticipantes(participantes);
+			abiertas.add(nueva);
+		}
+		Galeria.setSubastasAbiertas(abiertas);
+	}
+	
+	public void salvarSubastas(Inventario inventario, JSONObject jobject) {
+		JSONArray abiertas = new JSONArray();
+		for (ListaDeSubastas lista:Galeria.getSubastasAbiertas()) {
+			JSONObject jLista = new JSONObject();
+			ArrayList<String> titulos = new ArrayList<String>();
+			for (Subasta subasta:lista.getSubastas()) {
+				titulos.add(subasta.getPieza().getTitulo());
+			}
+			jLista.put("piezas", new JSONArray(titulos));
+			ArrayList<String> usuarios = new ArrayList<String>();
+			for (Comprador comprador:lista.getParticipantes()) {
+				usuarios.add(comprador.getLogin());
+			}
+			jLista.put("participantes", new JSONArray(usuarios));
+			abiertas.put(jLista);
+		}
+		jobject.put("subastasAbiertas", abiertas);
 	}
 	
 	public ArrayList<Comprador> cargarCompradores(String archivo) throws IOException{

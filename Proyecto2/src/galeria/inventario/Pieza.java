@@ -3,6 +3,7 @@ package galeria.inventario;
 import java.util.ArrayList;
 import galeria.compradores.Propietario;
 import galeria.usuarios.Artista;
+import galeria.ventas.Venta;
 
 public abstract class Pieza {
     private String titulo;
@@ -12,11 +13,10 @@ public abstract class Pieza {
     private boolean exhibida;
     private boolean disponible;
     private Propietario propietario;
-    private double precioVenta;
-    private String fechaVenta;
-    private Artista creador;
+    private int precioVenta;
     protected String tipoPieza;
-    public ArrayList<String> ventas;
+    private Venta venta;
+    public ArrayList<String> ventas = new ArrayList<String>();
     
     public Pieza(String titulo, int anio, String lugarCreacion, boolean exhibida, boolean disponible, ArrayList<Artista> autores) {
         this.titulo = titulo;
@@ -27,27 +27,12 @@ public abstract class Pieza {
         this.disponible = disponible;
     }
 
-    public void venderPieza(double precio, String fecha) {
-        this.precioVenta = precio;
-        this.fechaVenta = fecha;
-        this.disponible = false;
-    }
 
-    public double getPrecioVenta() {
+    public int getPrecioVenta() {
         return precioVenta;
     }
 
-    public String getFechaVenta() {
-        return fechaVenta;
-    }
 
-    public Artista getCreador() {
-        return creador;
-    }
-
-    public void setCreador(Artista creador) {
-        this.creador = creador;
-    }
 
 	public String getTitulo() {
 		return titulo;
@@ -92,16 +77,24 @@ public abstract class Pieza {
 	public void setPropietario(Propietario propietario) {
 		this.propietario = propietario;
 	}
+	
+	public Venta getVenta() {
+		return venta;
+	}
+	
+	public void setVenta(Venta venta) {
+		this.venta = venta;
+	}
 
-	public List<String> obtenerHistoriaPieza() {
-        List<String> historia = new ArrayList<>();   
+	public ArrayList<String> obtenerHistoriaPieza(Pieza pieza) {
+        ArrayList<String> historia = new ArrayList<String>();   
         String descripcion = "Autores: ";
-        for(Artista autor : this.getAutores()) {
+        for(Artista autor : pieza.getAutores()) {
         	descripcion +=  autor.getNombre() + ", ";
         }
-        descripcion += "titulo: '" + this.getTitulo() + "', " + this.getAnio() + ", " +
-        		this.getLugarCreacion() + ", " + this.getTipoPieza() + ".";
-        descripcion += (this.isExhibida() ? " (Exhibida)" : " (No Exhibida)");
+        descripcion += "titulo: '" + pieza.getTitulo() + "', " + pieza.getAnio() + ", " +
+        			   pieza.getLugarCreacion() + ", " + pieza.getTipoPieza() + ".";
+        descripcion += (pieza.isExhibida() ? " (Exhibida)" : " (No Exhibida)");
         descripcion += ". El historial de ventas de esta pieza es: " + ventas;
         historia.add(descripcion);
         return historia;

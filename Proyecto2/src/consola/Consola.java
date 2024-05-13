@@ -21,8 +21,8 @@ public abstract class Consola {
 	public void cargarArchivo(Persistencia persistencia) throws JSONException, Exception{
 		try
         {
+			Galeria.cargarCompradores("./datos/" + archivoUsuarios);
             persistencia.cargarGaleria( "./datos/" + archivoGaleria);
-            Galeria.cargarCompradores("./datos/" + archivoUsuarios);
         } catch (FormatoIncorrectoException e) {
         	e.printStackTrace( );
         }

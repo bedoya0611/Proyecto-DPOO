@@ -1,5 +1,6 @@
 package galeria.ventas;
 
+import java.util.Date;
 import java.util.List;
 
 import galeria.compradores.Compra;
@@ -8,11 +9,10 @@ import galeria.inventario.Inventario;
 import galeria.inventario.Pieza;
 
 public abstract class Venta {
-	private boolean bloqueada;
 	private List<Comprador> compradores;
+	protected Date fecha;
 	public boolean pagoHecho;
 	public Pieza pieza;
-	public Inventario inventario;
 	public static final String TIPO_VENTA = "";
 	
 	public void compra() {
@@ -30,11 +30,12 @@ public abstract class Venta {
 	public void registrarVenta() {
 	}
 	
-	public void realizarVenta() {
-	}
-	
 	public Pieza getPieza() {
 		return this.pieza;
+	}
+	
+	public void setPieza(Pieza pieza) {
+		this.pieza = pieza;
 	}
 	
 	public boolean getPagoHecho() {
@@ -44,5 +45,8 @@ public abstract class Venta {
 	public void setPagoHecho(boolean pagoHecho) {
 		this.pagoHecho = pagoHecho;
 	}
+	
+	public String getTipo() {
+		return TIPO_VENTA;
+	}
 }
-

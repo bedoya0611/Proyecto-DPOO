@@ -2,6 +2,10 @@ package galeria.compradores;
 
 import java.util.ArrayList;
 
+import galeria.inventario.Inventario;
+import galeria.inventario.Pieza;
+import galeria.ventas.VentaFija;
+
 public class Comprador{
 
 	
@@ -12,7 +16,7 @@ public class Comprador{
 	private String login;
 	private String password;
 
-	private ArrayList<Compra> compras;
+	private ArrayList<Compra> compras = new ArrayList<Compra>();
 
 	public Comprador(boolean verificacion, String nNombre, int identificacion, int nTelefono, String nLogin, String password) {
 		this.verificado = verificacion;
@@ -25,6 +29,10 @@ public class Comprador{
 	
 	public boolean isVerificado() {
 		return this.verificado;
+	}
+	
+	public void verificar() {
+		this.verificado = true;
 	}
 	
 	public String getNombre() {
@@ -57,6 +65,14 @@ public class Comprador{
 	
 	public boolean verificarPasswd(String psswd) {
 		return this.password.equals(psswd);
+	}
+	
+	public void comprarPieza(Pieza pieza, Inventario inventario) {
+		if (pieza.isDisponible()) {
+			pieza.setDisponible(false);
+			inventario.bloquearPieza(pieza.getTitulo());
+			pieza.setVenta(new VentaFija(pieza.getPrecioVenta(),this));
+		}
 	}
 	
 }

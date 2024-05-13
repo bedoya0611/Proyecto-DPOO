@@ -29,7 +29,16 @@ public class Inventario {
         if (contienePieza(pieza)) {
             throw new PiezaDuplicadaException("La pieza " + pieza.getTitulo() + " ya existe en el inventario.");
         }
-        this.piezasDisponibles.add(pieza);
+        if (pieza.isDisponible()) {
+        	this.piezasDisponibles.add(pieza);
+        	
+        } else {
+        	this.piezasBloqueadas.add(pieza);
+        }
+        if (pieza.isExhibida()) {
+        	this.piezasExhibidas.add(pieza);
+        }
+        
     }
 
     public boolean contienePieza(Pieza pieza) {
@@ -71,7 +80,7 @@ public class Inventario {
         piezasExhibidas.remove(laPieza);
     }
 
-    private Pieza buscarPiezaPorTitulo(String titulo, ArrayList<Pieza> listaPiezas) {
+    public Pieza buscarPiezaPorTitulo(String titulo, ArrayList<Pieza> listaPiezas) {
         for (Pieza pieza : listaPiezas) {
             if (pieza.getTitulo().equals(titulo)) {
                 return pieza;

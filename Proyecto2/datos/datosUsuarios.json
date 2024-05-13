@@ -1,1 +1,18 @@
-{"compradores":[]}
+{"compradores": [
+  {
+    "verificado": true,
+    "telefonoComprador": 10564,
+    "nombreComprador": "Juan",
+    "psswdComprador": "1234",
+    "loginComprador": "comprador2",
+    "idComprador": 105
+  },
+  {
+    "verificado": false,
+    "telefonoComprador": 10256,
+    "nombreComprador": "Daniel",
+    "psswdComprador": "1234",
+    "loginComprador": "comprador1",
+    "idComprador": 106
+  }
+]}

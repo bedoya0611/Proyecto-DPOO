@@ -9,6 +9,7 @@ import galeria.compradores.Comprador;
 import galeria.inventario.Inventario;
 import galeria.inventario.Pieza;
 import galeria.ventas.Venta;
+import galeria.ventas.VentaFija;
 
 public class Admin extends Usuario {
     private String nombre;
@@ -22,17 +23,14 @@ public class Admin extends Usuario {
     }
 
 
-    public void registrarPieza(Pieza pieza, Inventario inventario) {
-        try {
-			inventario.agregarPieza(pieza);
-		} catch (PiezaDuplicadaException e) {
-			e.printStackTrace();
-		}
+    public void registrarPieza(Pieza pieza, Inventario inventario) throws PiezaDuplicadaException {
+		inventario.agregarPieza(pieza);
     }
 
-    public void confirmarVenta(Venta venta) {
+    public void confirmarVenta(VentaFija venta, Inventario inventario) {
         if (venta.pagoHecho) {
-            venta.realizarVenta();
+            venta.realizarVenta(inventario);
+            System.out.println("Venta realizada con éxito.");
         } else {
             System.out.println("El pago aún no se ha realizado.");
         }
@@ -58,12 +56,8 @@ public class Admin extends Usuario {
         return null;
     }
 
-    public boolean verificarComprador(Comprador comprador) {
-        return comprador.isVerificado();
-    }
-
-    public void modificarComprador(Comprador comprador, int nuevoTelefono) {
-        comprador.setTelefono(nuevoTelefono);
+    public void verificarComprador(Comprador comprador) {
+        comprador.verificar();
     }
 
     public String getNombre() {

@@ -1,12 +1,17 @@
 package consola;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import org.json.JSONException;
 
 import galeria.Galeria;
+import galeria.compradores.Comprador;
+import galeria.inventario.Pieza;
 import galeria.persistencia.Persistencia;
+import galeria.usuarios.Artista;
 
 public class ConsolaAdmin extends Consola {
 
@@ -114,7 +119,51 @@ public class ConsolaAdmin extends Consola {
 			String idioma = reader.readLine();
 			Galeria.registrarVideo(titulo, anio, lugar, nombresAutores, exhibida, duracion, idioma);
 		}
-		
+		System.out.println("Pieza registrada con éxito");	
+	}
+	
+	private void confirmarVenta() throws IOException {
+		System.out.println("Ingrese el título de la pieza que se venderá:");
+		String tituloPieza = reader.readLine();
+		Galeria.confirmarVenta(tituloPieza);
+	}
+	
+	private void consultarComprador() throws IOException {
+		System.out.println("Ingrese el usuario del comprador a consultar:");
+		String usuario = reader.readLine();
+		Comprador comprador = Galeria.consultarComprador(usuario);
+		if (comprador == null) {System.err.println("Usuario no encontrado");return;}
+		System.out.println("-----COMPRADOR-----");
+		System.out.println("Nombre: "+comprador.getNombre());
+		System.out.println("Número de identificación: "+comprador.getIdentificador());
+		System.out.println("Teléfono: "+comprador.getTelefono());
+		System.out.println("Verificado: "+comprador.isVerificado());
+	}
+	
+	private void verificarComprador() throws IOException {
+		System.out.println("Ingrese el usuario del comprador a verificar:");
+		String usuario = reader.readLine();
+		Galeria.verificarComprador(usuario);
+	}
+	
+	private void consultarArtista() throws IOException {
+		System.out.println("Ingrese el nombre del artistaa a consultar:");
+		String nombre = reader.readLine();
+		Artista elArtista = Galeria.consultarArtista(nombre);
+		if (elArtista == null) {System.err.println("Artista no encontrado");return;}
+		System.out.println("-----ARTISTA-----");
+		System.out.println("Nombre: "+elArtista.getNombre());
+		System.out.println("Obras:");
+		for (Pieza pieza:elArtista.getObras()) {
+			System.out.println("- "+pieza.getTitulo());
+		}
+	}
+	
+	private void consultarPieza() throws IOException {
+		System.out.println("Ingrese el título de la pieza a consultar");
+		String titulo = reader.readLine();
+		ArrayList<String> lista = Galeria.consultarPieza(titulo);
+		System.out.println(lista.toString());
 	}
 	
 	private void imprimirMenu() throws Exception {
@@ -127,19 +176,31 @@ public class ConsolaAdmin extends Consola {
 			System.out.println("2 - Confirmar Venta");
 			System.out.println("3 - Consultar Comprador");
 			System.out.println("4 - Verificar Comprador");
-			System.out.println("5 - Modificar Comprador");
-			System.out.println("6 - Consultar Artista");
-			System.out.println("7 - Consultar Pieza");
+			System.out.println("5 - Consultar Artista");
+			System.out.println("6 - Consultar Pieza");
 			System.out.println("0 - Salir");
 			try {
     			seleccion = Integer.valueOf(reader.readLine());
     			if (seleccion<0 || seleccion > 7) {throw new Exception();}
     		} catch (Exception e) {
+    			seleccion = 10;
     			System.err.println("Selección incorrecta");
     		}
 			if (seleccion == 1) {
 				registrarPieza();
+			} else if (seleccion == 2){
+				confirmarVenta();
+			} else if (seleccion == 3) {
+				consultarComprador();
+			} else if (seleccion == 4) {
+				verificarComprador();
+			} else if (seleccion == 5) {
+				consultarArtista();
+			} else if (seleccion == 6) {
+				consultarPieza();
 			}
+			
+			guardarArchivo(persistencia, Galeria.getUnAdmin(), Galeria.getUnInventario(), new ArrayList<Comprador>(Galeria.getCompradores().values()));
 		}
 	}
 	
