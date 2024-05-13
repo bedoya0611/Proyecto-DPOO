@@ -58,10 +58,6 @@ public class Inventario {
         if (laPieza != null) {
             piezasDisponibles.remove(laPieza);
         }
-        laPieza = buscarPiezaPorTitulo(titulo, piezasBloqueadas);
-        if (laPieza != null) {
-            piezasBloqueadas.remove(laPieza);
-        }
     }
 
     public void exhibirPieza(String titulo) throws PiezaInexistenteException {
