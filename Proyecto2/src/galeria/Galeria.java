@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.json.JSONException;
 
 import galeria.Exceptions.FormatoIncorrectoException;
+import galeria.Exceptions.PiezaDuplicadaException;
 import galeria.compradores.Comprador;
 import galeria.inventario.Inventario;
 import galeria.inventario.*;
@@ -14,6 +15,8 @@ import galeria.persistencia.Persistencia;
 import galeria.usuarios.Admin;
 import galeria.usuarios.Artista;
 import galeria.usuarios.Empleado;
+import galeria.ventas.ListaDeSubastas;
+import galeria.ventas.VentaFija;
 
 public class Galeria
 {
@@ -24,19 +27,15 @@ public class Galeria
     private static Persistencia persistencia = new Persistencia();
     private static HashMap<String, Comprador> compradores = new HashMap<String, Comprador>();
     private static HashMap<String, Artista> artistas = new HashMap<String, Artista>();
+    private static ArrayList<ListaDeSubastas> subastasAbiertas = new ArrayList<ListaDeSubastas>();
 
-    /**
-     * Es un método que corre la aplicación y realmente no hace nada interesante: sólo muestra cómo se podría utilizar la clase Aerolínea para hacer pruebas.
-     * @throws IOException 
-     * @throws Exception 
-     * @throws JSONException 
-     */
     
     public static void cargarCompradores(String archivo) throws IOException {
     	ArrayList<Comprador> listaCompradores= persistencia.cargarCompradores(archivo); 
     	for(Comprador comprador:listaCompradores) {
     		compradores.put(comprador.getLogin(), comprador);
     	}
+    	
     }
     
     public void correrAplicacion( ) throws JSONException, Exception
@@ -64,6 +63,42 @@ public class Galeria
     	unInventario = inventario;
     }
     
+    
+    
+    public static Admin getUnAdmin() {
+		return unAdmin;
+	}
+
+	public static Inventario getUnInventario() {
+		return unInventario;
+	}
+
+	public static Empleado getUnEmpleado() {
+		return unEmpleado;
+	}
+
+	public static Comprador getUnComprador() {
+		return unComprador;
+	}
+
+	public static Persistencia getPersistencia() {
+		return persistencia;
+	}
+
+	public static HashMap<String, Artista> getArtistas() {
+		return artistas;
+	}
+
+	public static HashMap<String, Comprador> getCompradores(){
+    	return compradores;
+    }
+	
+	public static void setArtistas(ArrayList<Artista> listaArtistas) {
+		for(Artista artista:listaArtistas) {
+			artistas.put(artista.getNombre(), artista);
+		}
+	}
+    
     //Verifica credenciales y devuelve el tipo de empleado
     //La primera posición indica si las credenciales son correctas
     //La segunda posición indica true si es Operador, false si es Cajero
@@ -84,13 +119,12 @@ public class Galeria
     	return retorno;
     }
 
+    public static ArrayList<ListaDeSubastas> getSubastasAbiertas(){
+    	return subastasAbiertas;
+    }
     
-    public static boolean verificarCredencialesAdmin( String usuario, String psswd ){
-    	if (unAdmin == null){
-    		return false;
-    	}
-    	if (!unAdmin.getLogin().equals(usuario)) {return false;}
-    	return unAdmin.verificarPassword(psswd);
+    public static void setSubastasAbiertas(ArrayList<ListaDeSubastas> abiertas) {
+    	subastasAbiertas = abiertas;
     }
     
     public static boolean verificarCredencialesUsuario(String usuario, String psswd) {
@@ -101,8 +135,18 @@ public class Galeria
     	return unComprador.verificarPasswd(psswd);
     }
     
+    //ADMIN
+
+    public static boolean verificarCredencialesAdmin( String usuario, String psswd ){
+    	if (unAdmin == null){
+    		return false;
+    	}
+    	if (!unAdmin.getLogin().equals(usuario)) {return false;}
+    	return unAdmin.verificarPassword(psswd);
+    }
+    
     public static void registrarPintura(String titulo,int anio,String lugar,String[] nombresAutores,
-    		boolean exhibida,double ancho,double alto,String tecnica,String estilo) {
+    		boolean exhibida,double ancho,double alto,String tecnica,String estilo) throws PiezaDuplicadaException {
     	ArrayList<Artista> listaAutores = new ArrayList<Artista>();
     	for (String nombre:nombresAutores) {
     		if(artistas.containsKey(nombre)) {
@@ -119,7 +163,7 @@ public class Galeria
     
     public static void registrarEscultura(String titulo,int anio,String lugar,String[] nombresAutores, 
     		boolean exhibida,double ancho,double alto,double profundidad,String material,double peso,
-    		boolean electricidad,String detalles) {
+    		boolean electricidad,String detalles) throws PiezaDuplicadaException {
     	ArrayList<Artista> listaAutores = new ArrayList<Artista>();
     	for (String nombre:nombresAutores) {
     		if(artistas.containsKey(nombre)) {
@@ -135,7 +179,7 @@ public class Galeria
     }
     
     public static void registrarFotografia(String titulo,int anio,String lugar,String[] nombresAutores,
-    		boolean exhibida,double ancho,double alto,String camara) {
+    		boolean exhibida,double ancho,double alto,String camara) throws PiezaDuplicadaException {
     	ArrayList<Artista> listaAutores = new ArrayList<Artista>();
     	for (String nombre:nombresAutores) {
     		if(artistas.containsKey(nombre)) {
@@ -151,7 +195,7 @@ public class Galeria
     }
     
     public static void registrarImpresion(String titulo,int anio,String lugar,String[] nombresAutores,
-    		boolean exhibida,double ancho,double alto,String tecnica) {
+    		boolean exhibida,double ancho,double alto,String tecnica) throws PiezaDuplicadaException {
     	ArrayList<Artista> listaAutores = new ArrayList<Artista>();
     	for (String nombre:nombresAutores) {
     		if(artistas.containsKey(nombre)) {
@@ -167,7 +211,7 @@ public class Galeria
     }
     
     public static void registrarVideo(String titulo,int anio,String lugar,String[] nombresAutores,
-    		boolean exhibida,double duracion,String idioma) {
+    		boolean exhibida,double duracion,String idioma) throws PiezaDuplicadaException {
     	ArrayList<Artista> listaAutores = new ArrayList<Artista>();
     	for (String nombre:nombresAutores) {
     		if(artistas.containsKey(nombre)) {
@@ -180,5 +224,65 @@ public class Galeria
     	}
     	Pieza video = new Video(titulo, anio, lugar, listaAutores, exhibida, true, idioma, duracion);
     	unAdmin.registrarPieza(video, unInventario);
+    }
+    
+    public static void confirmarVenta(String titulo) {
+    	for(Pieza pieza:unInventario.getPiezasBloqueadas()) {
+    		if(pieza.getTitulo().equals(titulo)) {
+    			unAdmin.confirmarVenta((VentaFija) pieza.getVenta(), unInventario);
+    			break;
+    		}
+    	}
+    }
+    
+    public static Comprador consultarComprador(String usuario) {
+    	Comprador elComprador = compradores.get(usuario);
+    	return elComprador;
+    }
+    
+    public static void verificarComprador(String usuario) {
+    	Comprador elComprador = compradores.get(usuario);
+    	if(elComprador == null) {System.err.println("Usuario no encontrado");return;}
+    	unAdmin.verificarComprador(elComprador);
+    	System.out.println("Comprador con usuario "+usuario+" verificado con éxito");
+    }
+    
+    public static Artista consultarArtista(String nombre) {
+    	Artista elArtista = artistas.get(nombre);
+    	return elArtista;
+    }
+    
+    public static ArrayList<String> consultarPieza(String titulo) {
+    	Pieza pieza = unInventario.buscarPiezaPorTitulo(titulo, unInventario.getPiezasBloqueadas());
+    	if (pieza == null) {
+    		pieza = unInventario.buscarPiezaPorTitulo(titulo,unInventario.getPiezasDisponibles());
+    	}
+    	ArrayList<String> lista = pieza.obtenerHistoriaPieza(pieza);
+    	return lista;
+    }
+    
+    //USUARIO
+    
+    public static void comprarPieza(String titulo) {
+    	Pieza laPieza = unInventario.buscarPiezaPorTitulo(titulo, unInventario.getPiezasDisponibles());
+    	if (laPieza == null) {
+    		System.out.println("La pieza "+titulo+" no se encuentra disponible para la compra");
+    		return;
+    	}
+    	unComprador.comprarPieza(laPieza, unInventario);
+    	System.out.println("Operación de compra realizada. Esperando verificación del administrador");
+    }
+    
+    public static boolean participarEnSubasta(int index, String[] credenciales) {
+    	Comprador comprador = compradores.get(credenciales[0]);
+    	boolean inscrito;
+    	if(comprador.isVerificado()) {
+    		ListaDeSubastas lista = subastasAbiertas.get(index);
+    		lista.agregarParticipante(comprador);
+    		inscrito = true;
+    	} else {
+    		inscrito = false;
+    	}
+    	return inscrito;
     }
 }

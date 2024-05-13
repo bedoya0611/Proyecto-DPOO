@@ -1,6 +1,7 @@
 package galeria.ventas;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import galeria.compradores.Compra;
 import galeria.compradores.Comprador;
@@ -15,18 +16,27 @@ public class VentaFija extends Venta{
 	public static final String TIPO_VENTA = "Fija";
 
 	
-	public VentaFija (int fijo) {
+	public VentaFija (int fijo, Comprador comprador) {
 		this.precioFijo = fijo;
+		this.fecha = new Date();
+		this.pagoHecho = true;
+		this.comprador = comprador;
 	}
 	
 	public int getPrecioFijo () {
 		return this.precioFijo;
 	}
 	
-	public void venta(int monto, Comprador aspirante) {
+	@Override
+	public String getTipo() {
+		return this.TIPO_VENTA;
+	}
+	
+	
+	public void venta(int monto, Comprador aspirante, Inventario inventario) {
 		if (monto == precioFijo) {
 			comprador = aspirante;
-			this.realizarVenta();
+			this.realizarVenta(inventario);
 		}
 	}
 	
@@ -37,7 +47,7 @@ public class VentaFija extends Venta{
 	@Override
 	public void reclasificarComprador() {
 		if(comprador.getCompras().size() == 0) {
-			new Propietario(comprador.isVerificado(), comprador.getNombre(), comprador.getIdentificador(),
+			comprador = new Propietario(comprador.isVerificado(), comprador.getNombre(), comprador.getIdentificador(),
 			 				comprador.getTelefono(), comprador.getLogin(), comprador.getPassword());
 		}
 	}
@@ -60,8 +70,7 @@ public class VentaFija extends Venta{
 		pieza.ventas.add(registro);
 	}
 	
-	@Override
-	public void realizarVenta() {
+	public void realizarVenta(Inventario inventario) {
 		if(pagoHecho == true) {
 			this.compra();
 			this.reclasificarComprador();

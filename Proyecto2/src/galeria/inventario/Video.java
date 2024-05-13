@@ -11,7 +11,7 @@ public class Video extends Pieza{
 	
 	public Video(String titulo, int anio, String lugarCreacion, ArrayList<Artista> autores, boolean exhibida,
 			boolean disponible, String idioma, double duracion) {
-		super(titulo, anio, lugarCreacion, disponible, exhibida, autores);
+		super(titulo, anio, lugarCreacion, exhibida, disponible, autores);
 		this.idioma = idioma;
 		this.duracion = duracion;
 		this.tipoPieza = "Video";

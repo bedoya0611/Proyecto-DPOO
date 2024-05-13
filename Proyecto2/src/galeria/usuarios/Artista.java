@@ -25,10 +25,6 @@ public class Artista {
             	descripcion +=  autor.getNombre();
             }
             descripcion += (pieza.isExhibida() ? " (Exhibida)" : " (No Exhibida)");
-            if (!pieza.isDisponible()) {
-                descripcion += ". Vendida por: $" + pieza.getPrecioVenta() +
-                               " el " + pieza.getFechaVenta() + ".";
-            }
             historia.add(descripcion);
         }
         return historia;

@@ -6,6 +6,7 @@ import galeria.ventas.Subasta;
 import galeria.inventario.Pieza;
 import galeria.inventario.Pintura;
 import galeria.Exceptions.PiezaDuplicadaException;
+import galeria.compradores.Comprador;
 import galeria.inventario.Inventario;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -28,13 +29,11 @@ public class CajeroTest {
         inventario = new Inventario();
         inventario.agregarPieza(pieza);
 
-        ventaFija = new VentaFija(100);
+        ventaFija = new VentaFija(100, new Comprador(false, null, 0, 0, null, null));
         ventaFija.pieza = pieza;
-        ventaFija.inventario = inventario;
 
-        subasta = new Subasta(100, 150, 200, pieza, inventario);
+        subasta = new Subasta(100, 150, 200, pieza);
         subasta.setPieza(pieza);
-        subasta.inventario = inventario;
     }
 
     @Test

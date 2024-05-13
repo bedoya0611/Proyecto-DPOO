@@ -6,6 +6,8 @@ import galeria.inventario.Inventario;
 import galeria.inventario.Pieza;
 import galeria.inventario.Pintura;
 import galeria.ventas.Venta;
+import galeria.ventas.VentaFija;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +26,7 @@ public class AdminTest {
     private Admin admin;
     private Inventario inventario;
     private Pieza pieza;
-    private Venta venta;
+    private VentaFija venta;
     private List<Comprador> compradores;
 
     @BeforeEach
@@ -32,7 +34,7 @@ public class AdminTest {
         admin = new Admin("adminLogin", "adminPass", "Admin", 1);
         inventario = new Inventario();
         pieza = new Pintura("Obra", 2020, "Ciudad", new ArrayList<>(), true, true, 0, 0, "x", "y");
-        venta = new Venta() { 
+        venta = new VentaFija(4056, new Comprador(false, null, 0, 0, null, null)) { 
             private boolean pagoHecho = false;
         };
         compradores = new ArrayList<>();
@@ -51,14 +53,14 @@ public class AdminTest {
     @Test
     void testConfirmarVentaPagoHecho() {
         venta.setPagoHecho(true); 
-        admin.confirmarVenta(venta);
+        admin.confirmarVenta(venta, inventario);
         assertTrue(venta.getPagoHecho());
     }
 
     @Test
     void testConfirmarVentaPagoNoHecho() {
         venta.setPagoHecho(false);
-        admin.confirmarVenta(venta);
+        admin.confirmarVenta(venta, inventario);
         assertFalse(venta.getPagoHecho());
     }
 
@@ -84,14 +86,8 @@ public class AdminTest {
 
     @Test
     void testVerificarComprador() {
-        Comprador comprador = new Comprador(true,"Comprador",1, 2, "compLogin", "compPass");
-        assertTrue(admin.verificarComprador(comprador));
-    }
-
-    @Test
-    void testModificarComprador() {
-        Comprador comprador = new Comprador(true,"Comprador",1, 2, "compLogin", "compPass");
-        admin.modificarComprador(comprador, 1234567890);
-        assertEquals(1234567890, comprador.getTelefono());
+        Comprador comprador = new Comprador(false,"Comprador",1, 2, "compLogin", "compPass");
+        admin.verificarComprador(comprador);
+        assertTrue(comprador.isVerificado());
     }
 }
