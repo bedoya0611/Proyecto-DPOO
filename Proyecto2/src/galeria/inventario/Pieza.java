@@ -93,15 +93,15 @@ public abstract class Pieza {
 		this.propietario = propietario;
 	}
 
-	public List<String> obtenerHistoriaPieza(Pieza pieza) {
+	public List<String> obtenerHistoriaPieza() {
         List<String> historia = new ArrayList<>();   
         String descripcion = "Autores: ";
-        for(Artista autor : pieza.getAutores()) {
+        for(Artista autor : this.getAutores()) {
         	descripcion +=  autor.getNombre() + ", ";
         }
-        descripcion += "titulo: '" + pieza.getTitulo() + "', " + pieza.getAnio() + ", " +
-        			   pieza.getLugarCreacion() + ", " + pieza.getTipoPieza() + ".";
-        descripcion += (pieza.isExhibida() ? " (Exhibida)" : " (No Exhibida)");
+        descripcion += "titulo: '" + this.getTitulo() + "', " + this.getAnio() + ", " +
+        		this.getLugarCreacion() + ", " + this.getTipoPieza() + ".";
+        descripcion += (this.isExhibida() ? " (Exhibida)" : " (No Exhibida)");
         descripcion += ". El historial de ventas de esta pieza es: " + ventas;
         historia.add(descripcion);
         return historia;
