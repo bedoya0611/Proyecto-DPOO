@@ -38,12 +38,14 @@ import galeria.compradores.Comprador;
 import galeria.inventario.Inventario;
 import galeria.persistencia.Persistencia;
 import galeria.usuarios.Admin;
+import interfaz.InterfazEmpleado;
 
 public class Interfaz extends JFrame implements ActionListener{
 	
 	public final static String ADMIN = "a";
 	public final static String OPERADOR = "o";
 	public final static String CAJERO = "c";
+    public final static String EMPLEADO  = "e";
 	public final static String USUARIO = "u";
 
     private JFrame frame; //main frame
@@ -213,6 +215,9 @@ public class Interfaz extends JFrame implements ActionListener{
             	setVisible(false);
             	if (tipo.equals("a")) {
             		new InterfazAdmin(this);
+            	}
+                if (tipo.equals("e")) {
+            		new InterfazEmpleado(this);
             	}
             }
         }
