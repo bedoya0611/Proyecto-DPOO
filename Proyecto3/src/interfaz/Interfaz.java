@@ -213,6 +213,9 @@ public class Interfaz extends JFrame implements ActionListener{
             	setVisible(false);
             	if (tipo.equals("a")) {
             		new InterfazAdmin(this);
+            	} else if (tipo.equals("u")) {
+            		String[] cred = {userText, pwdText};
+            		new InterfazUsuario(this, cred);
             	}
             }
         }
@@ -236,15 +239,14 @@ public class Interfaz extends JFrame implements ActionListener{
 	}
     
     public void guardarArchivo(Persistencia persistencia, Admin administrador, Inventario inventario,
-			ArrayList<Comprador> compradores) {
-	try {
-		persistencia.salvarGaleria("./datos/"+archivoGaleria, administrador, inventario);
-		persistencia.salvarCompradores("./datos/"+archivoUsuarios, compradores);
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-	
-}
+				ArrayList<Comprador> compradores) {
+		try {
+			persistencia.salvarGaleria("./datos/"+archivoGaleria, administrador, inventario);
+			persistencia.salvarCompradores("./datos/"+archivoUsuarios, compradores);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
 
     public static void main(String[] args) throws UnsupportedLookAndFeelException {
     	UIManager.setLookAndFeel(new FlatIntelliJLaf());

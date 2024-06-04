@@ -159,23 +159,36 @@ public class InterfazAdmin extends JFrame implements ActionListener{
 		JOptionPane.showMessageDialog(this, lista.toString());
 		
 	}
+	
+	private void verificarComprador() {
+		String usuario = (String) JOptionPane.showInputDialog(this, "Ingrese el usuario del comprador", "Verificar Comprador", JOptionPane.QUESTION_MESSAGE);
+		Comprador comprador = Galeria.consultarComprador(usuario);
+		if(comprador == null) {
+			JOptionPane.showMessageDialog(this, "No se pudo encontrar el comprador", "", JOptionPane.ERROR_MESSAGE);
+		}else{
+			Galeria.verificarComprador(comprador);
+			JOptionPane.showMessageDialog(this, "Comprador verificado", "", JOptionPane.PLAIN_MESSAGE);
+		}
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("Registrar")) {
 			new VentanaRegistrar();
-			padre.guardarArchivo(padre.persistencia, Galeria.getUnAdmin(), Galeria.getUnInventario(), new ArrayList<Comprador>(Galeria.getCompradores().values()));
 		}else if(e.getActionCommand().equals("Confirmar")) {
 			confirmarVenta();
 		}else if(e.getActionCommand().equals("Comprador")) {
 			consultarComprador();
 		}else if(e.getActionCommand().equals("Verificar")) {
-			
+			verificarComprador();
 		}else if(e.getActionCommand().equals("Artista")) {
 			consultarArtista();
 		}else if(e.getActionCommand().equals("Pieza")) {
 			consultarPieza();
 		}
+		padre.guardarArchivo(padre.persistencia, Galeria.getUnAdmin(), Galeria.getUnInventario(), new ArrayList<Comprador>(Galeria.getCompradores().values()));
 	}
 
 }

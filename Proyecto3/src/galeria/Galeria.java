@@ -241,11 +241,8 @@ public class Galeria
     	return elComprador;
     }
     
-    public static void verificarComprador(String usuario) {
-    	Comprador elComprador = compradores.get(usuario);
-    	if(elComprador == null) {System.err.println("Usuario no encontrado");return;}
+    public static void verificarComprador(Comprador elComprador) {
     	unAdmin.verificarComprador(elComprador);
-    	System.out.println("Comprador con usuario "+usuario+" verificado con éxito");
     }
     
     public static Artista consultarArtista(String nombre) {
@@ -264,14 +261,13 @@ public class Galeria
     
     //USUARIO
     
-    public static void comprarPieza(String titulo) {
+    public static boolean comprarPieza(String titulo) {
     	Pieza laPieza = unInventario.buscarPiezaPorTitulo(titulo, unInventario.getPiezasDisponibles());
     	if (laPieza == null) {
-    		System.out.println("La pieza "+titulo+" no se encuentra disponible para la compra");
-    		return;
+    		return false;
     	}
     	unComprador.comprarPieza(laPieza, unInventario);
-    	System.out.println("Operación de compra realizada. Esperando verificación del administrador");
+    	return true;
     }
     
     public static boolean participarEnSubasta(int index, String[] credenciales) {

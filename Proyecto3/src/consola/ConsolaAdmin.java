@@ -143,7 +143,6 @@ public class ConsolaAdmin extends Consola {
 	private void verificarComprador() throws IOException {
 		System.out.println("Ingrese el usuario del comprador a verificar:");
 		String usuario = reader.readLine();
-		Galeria.verificarComprador(usuario);
 	}
 	
 	private void consultarArtista() throws IOException {
